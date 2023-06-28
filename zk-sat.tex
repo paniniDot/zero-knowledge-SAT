@@ -420,9 +420,13 @@ Siamo finalmente pronti per dare una definizione di sistema a dimostrazione inte
 \subsubsection{Dimostrazioni non interattive}
 
 \subsection{Protocolli reali}
-\subsubsection{Protocollo di identificazione di Fiat-Shamir (forse)}
+Fino a questo momento abbiamo fornito una trattazione teorica del concetto di zero-knowledge. In questa sezione vedremo come questi concetti possono essere applicati a protocolli reali.
 
-%%spiega bene cosa sono i protocolli di identificazione
+\subsubsection{Protocollo di identificazione di Fiat-Shamir}
+Per prima cosa occorre definire il concetto di \emph{protocollo di identificazione}. Un protocollo di identificazione permette al verificatore di identificare il prover. 
+Trattandosi di un sistema a dimostrazione interattiva, zero-knowledge, occorre che il protocollo consenta al prover di dimostrare la propria identità con probabilità schiacciante qualora egli sia chi dice di essere(\emph{completezza}), senza rivelare alcuna informazione aggiuntiva (\emph{zero-knowledge}) e senza che il verificatore possa essere ingannato da un impostore che non conosce l'identità del prover (\emph{correttezza}).
+
+Il \emph{protocollo di identificazione di Fiat-Shamir} è un protocollo di identificazione che utilizza una funzione di hash crittografica sicura. Questo algoritmo è basato sulla difficoltà di estrarre la radice quadrata in modulo di un numero $n$ quando la sua fattorizzazione è sconosciuta.
 
 \subsection{Punti deboli (forse)}
 
