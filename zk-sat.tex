@@ -8,6 +8,7 @@
 \usepackage{csquotes}
 \usepackage{tikz} % grafici
 \usepackage{adjustbox}
+\usepackage{mdframed}
 
 \usepackage{ifthen} %esecuzioni condizionali
 \usepackage{algorithmicx} %algoritmi
@@ -24,7 +25,6 @@
 \theoremstyle{definition}
 % Definizione dell'ambiente per le definizioni
 \newtheorem{definizione}{Definizione}
-
 
 \usepackage{amssymb}
 \usepackage{biblatex}
@@ -160,6 +160,46 @@ Detto questo, vengono di seguito riportate una serie di classi con le rispettive
     \item \texttt{$\mathcal{NP}$-hard}: Una classe di problemi che sono almeno altrettanto difficili quanto i problemi \texttt{$\mathcal{NP}$-completi}, ma non necessariamente appartenenti a \texttt{$\mathcal{NP}$}. 
     \item \texttt{$\mathcal{PSPACE}$}: La classe dei problemi che possono essere risolti utilizzando una quantità di spazio di memoria polinomiale su una macchina di Turing deterministica. Include molti problemi di decisione e problemi di ricerca nello spazio degli stati.
 \end{itemize}
+
+\subsubsection{Algebra modulare}
+Denotiamo con
+\begin{equation*}
+    a \bmod n
+\end{equation*}
+il resto della divisione intera fra $a$ e $n$. Cioè immagino di spezzare $a$ in $n$ parti uguali. L'ultima parte, se più piccola di $n$, avanzerà e costituirà proprio questa quantità.
+
+\paragraph{Proprietà aritmetiche del modulo}
+Tutte le operazioni aritmetiche di somma, prodotto, differenza e divisione, possono essere fatte distribuendo il modulo sui termini che compaiono. In altre parole, vale la proprietà distributiva con il modulo.
+Ad esempio si ha
+\begin{align*}
+    &(a + b) \bmod n = ((a \bmod n) + (b \bmod n)) \bmod n \\ 
+    &(a - b) \bmod n = ((a \bmod n) - (b \bmod n)) \bmod n \\
+    &(a \times b) \bmod n = ((a \bmod n) \times (b \bmod n)) \bmod n \\
+    &a^{r \times s} \bmod n = ((a^r \bmod n)^s) \bmod n, \quad \text{ con } r,s \text{ interi positivi} 
+\end{align*}
+Queste proprietà servono poiché a volte può essere utile (ad esempio per esigienze computazionali) distribuire il modulo fra fattori di dimensione più piccola.
+
+\paragraph{Congruenza}
+Si parla di \emph{congruenza} fra $a$ e $b$ mod $n$, esprimendola come
+\begin{equation*}
+    a \equiv b \bmod n \Leftrightarrow a \bmod n = b \bmod n
+\end{equation*}
+Cioè $a$ è congruente con $b$ se e solo se, qualora li dividessi per lo stesso numero $n$, generino lo stesso resto (pur non essendo necessariamente uguali). In questo caso si dice che appartengono nella stessa \emph{classe di equivalenza}.
+Per fare un esempio risulta $5 \equiv 11$ mod $3$, poiché sia 5 che 11, se divisi per 3 danno come resto 2.
+Alternativamente si può scrivere 
+\begin{equation*}
+    a \equiv b \bmod n \Leftrightarrow a = b + kn
+\end{equation*}
+Cioè $a$ è dato dalla somma di $b$ e un multiplo di $n$. Infatti se scrivo $7 \equiv 1$ mod $3$, allora sto dicendo che $7 = 1 + k3$, con $k = 2$.
+
+Introduciamo ora dei concetti che ci saranno utili in seguito.
+\begin{itemize}
+    \item \emph{Inverso moltiplicativo}. Dato un numero $a$ e un modulo $n$, l'inverso moltiplicativo di $a$ è un numero $b$ tale che $ab \equiv 1 \bmod n$. In altre parole, $b$ è un numero che moltiplicato per $a$ produce un multiplo di $n+1$. Ad esempio, l'inverso moltiplicativo di 3 modulo 5 è 2, poiché $3 \times 2 \equiv 1 \bmod 5$.
+    \item \emph{Radice quadrata modulo $n$}. Dato un numero $a$ e un modulo $n$, la radice quadrata modulo $n$ di $a$ è un numero $b$ tale che $b^2 \equiv a \bmod n$. Ad esempio, la radice quadrata modulo 5 di 4 è 2, poiché $2^2 \equiv 4 \bmod 5$.
+    \item \emph{Residuo quadratico}. Dato un numero $a$ e un modulo $n$, $a$ è un residuo quadratico modulo $n$ se esiste un numero $b$ tale che $b^2 \equiv a \bmod n$. Ad esempio, 4 è un residuo quadratico modulo 5, poiché $2^2 \equiv 4 \bmod 5$.
+\end{itemize}
+
+
 
 \subsection{Sistemi a dimostrazione interattiva}
 I primi ad essere presentati vengono detti \emph{sistemi a dimostrazione interattiva} il cui nome suggerisce la presenza di interazione tra un prover e un verifier. Questa modalità rende più semplice comunicare una qualche informazione. Citando Micali ``\emph{Ci occupiamo di quelle prove che possono essere ``spiegate in classe''. In modo informale, in una classe, il docente può sfruttare appieno la possibilità di interagire con i ``destinatari'' della prova. Essi possono porre domande nei punti cruciali dell'argomentazione e ricevere risposte. Questo rende la vita molto più facile.}'' \cite{micali}.
@@ -326,7 +366,7 @@ Questa sottile differenza può essere colta meglio pensando che SAT fa parte del
 
 
 \subsubsection{Dimostrazioni a conoscenza zero}
-L'idea alla base del lavoro di Micali e dei suoi colleghi fu quella di ``[...] \emph{fornire un nuovo ed efficiente metodo per comunicare una dimostrazione}``\cite[p. 291]{micali}, che riducesse a zero le informazioni superflue comunicate al di fuori dell'evidenza della dimostrazione.
+L'idea alla base del lavoro di Micali e dei suoi colleghi fu quella di ``[...] \emph{fornire un nuovo ed efficiente metodo per comunicare una dimostrazione}''\cite[p. 291]{micali}, che riducesse a zero le informazioni superflue comunicate al di fuori dell'evidenza della dimostrazione.
 
 
 La \emph{privacy} è uno dei fattori chiave che ha portato all'introduzione del concetto di conoscenza zero. Ciò deriva dalla significativa differenza tra dimostrare di possedere una determinata informazione mediante la sua divulgazione come prova e convincere terze parti della propria conoscenza utilizzando una strategia che non sveli direttamente l'informazione stessa. Queste dimostrazioni hanno un impatto notevole nel mondo reale, specialmente nei settori in cui è necessario dimostrare di avere accesso a informazioni sensibili che, per loro natura, non possono essere comunicate.
@@ -426,7 +466,70 @@ Fino a questo momento abbiamo fornito una trattazione teorica del concetto di ze
 Per prima cosa occorre definire il concetto di \emph{protocollo di identificazione}. Un protocollo di identificazione permette al verificatore di identificare il prover. 
 Trattandosi di un sistema a dimostrazione interattiva, zero-knowledge, occorre che il protocollo consenta al prover di dimostrare la propria identità con probabilità schiacciante qualora egli sia chi dice di essere(\emph{completezza}), senza rivelare alcuna informazione aggiuntiva (\emph{zero-knowledge}) e senza che il verificatore possa essere ingannato da un impostore che non conosce l'identità del prover (\emph{correttezza}).
 
-Il \emph{protocollo di identificazione di Fiat-Shamir} è un protocollo di identificazione che utilizza una funzione di hash crittografica sicura. Questo algoritmo è basato sulla difficoltà di estrarre la radice quadrata in modulo di un numero $n$ quando la sua fattorizzazione è sconosciuta.
+Il \emph{protocollo di identificazione di Fiat-Shamir} è un protocollo di identificazione che utilizza una funzione di hash crittografica sicura. Questo algoritmo è basato sulla difficoltà di estrarre la radice quadrata in modulo di un numero $n$ quando la sua \emph{fattorizzazione}\footnote{Banalmente la fattorizzazione di un numero consiste nel trovare i fattori primi che lo compongono.} è sconosciuta.
+
+Nell'articolo di Fiat e Shamir \cite{identification}, parlano di un ``trusted center'' (in italiano traducibile come autorità affidabile), che costituisce il verifier, che deve verificare l'identità di un utente che rappresenta il prover.
+
+\paragraph{Schema}
+L'autorità affidabile sceglie un \emph{modulo} $n$ (questo definirà un insieme di \emph{residui modulo} $n$ che consiste in tutti quei numeri interi compresi tra 0 e $n-1$ inclusi) e una \emph{funzione pseudocasuale} $f$ che associa ad una qualsiasi stringa binaria un residuo nell'intervallo $[0, n)$. Il numero $n$ è escelto come prodotto fra due numeri primi segreti
+\begin{equation*}
+    n = p \cdot q
+\end{equation*}
+Solamente l'atorità conosce questa fattorizzazione.
+Nel momento in cui un client vuole verificare la propria identità, come prima cosa l'autorità deve generare un \emph{certificato} che contiene le informazioni dell'utente. Questo certificato viene inviato al client che lo utilizzerà per dimostrare la propria identità. Questo certificato viene costruito come segue
+\begin{itemize}
+    \item Si calcolano i valori $v_j = f(I, j)$ per $j = 1, \dots, k$, dove $I$ è una stringa contenente i dati dell'utente.
+    \item Si prendono $k$ valori distinti di $j$ per cui $v_j$ è un residuo quadratico modulo $n$ (cioè esiste un valore che se elevato al quadrato risulta congruo a $v_j \bmod n$). A questo punto si calcola $s_j$ come la più piccola radice in modulo dell'inverso di $v_j$ (si veda il capitolo sull'algebra modulare).
+    \item Si crea un certificato che contenga $I$ e i $k$ valori $s_j$ insieme ai rispettivi indici.
+\end{itemize}
+
+
+\begin{mdframed}
+\begin{center}
+    \vspace{10pt}
+    \textbf{Sistema a prova interattivo $(P, V)$ per} \textit{Identificazione}
+    \vspace{10pt}
+\end{center} 
+Input comune: $f$ e $n$
+\begin{enumerate}
+    \item $P$ invia a $V$ la stringa $I$. 
+    \item $V$ genera $v_j = f(I, j)$ per $j = 1, \dots, k$.  
+\end{enumerate}
+Si ripetono i passaggi da 3 a 6 per $i = 1, \dots, t$:
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item $P$ prende un $r_i \in [0, n)$ casuale e invia $x_i = r_i^2 \bmod n$ a $V$.
+    \item $V$ invia un vettore binario casuale $(e_{i1}, \dots, e_{ik})$ a $P$.
+    \item $P$ invia a $V$ 
+    \begin{equation}\label{eq:fiat_shamir_yi}
+        y_i = r_i \prod_{e_{ij}=1} s_j \bmod n
+    \end{equation}
+    che non è altro che il prodotto fra il valore $r_i$ e tutti i valori $s_j$ per cui $e_{ij} = 1$, cioè il bit in posizione $j-$esima della stringa inviata all'iterazione $i-$esima.
+    \item $V$ verifica che 
+    \begin{equation}\label{eq:fiat_shamir_verifica}
+        x_i = y_i^2 \prod_{e_{ij} = 1} v_j \mod n
+    \end{equation}
+\end{enumerate}
+\end{mdframed}
+
+Ovviamente il verifier $V$ accetterà solamente in qualora la prova di $A$ solamente se tutti e $t$ i controlli (le iterazioni dei punti 3 fino a 6 del protocollo) hanno successo.
+
+Occorre a questo punto dimostrare che questo protocollo soddisfa le proprietà che caratterizzano i sistemi a dimostrazione interattiva zero-knowledge.
+
+\begin{proof}
+    \emph{Completezza}.
+    Sappiamo che 
+    \begin{equation*}
+        x_i = y_i^2 \prod_{e_{ij} = 1} v_j \mod n
+    \end{equation*}
+    A questo punto elevando la \ref{eq:fiat_shamir_yi} al quadrato e sostituendo nella \ref{eq:fiat_shamir_verifica} otteniamo
+    \begin{align*}
+        x_i &= \left( r_i^2 \prod_{e_{ij} = 1} s_j^2 \bmod n \right) \left( \prod_{e_{ij} = 1} v_j \bmod n \right) \\
+        &= r_i^2 \prod_{e_{ij} = 1} ( s_j^2 v_j ) \bmod n 
+    \end{align*}
+    Per ipotesi avevamo scelto 
+\end{proof}
+
 
 \subsection{Punti deboli (forse)}
 
