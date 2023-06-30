@@ -365,7 +365,7 @@ Questa sottile differenza può essere colta meglio pensando che SAT fa parte del
 
 
 
-\subsubsection{Dimostrazioni a conoscenza zero}
+\subsubsection{Dimostrazioni a conoscenza zero}\label{zk}
 L'idea alla base del lavoro di Micali e dei suoi colleghi fu quella di ``[...] \emph{fornire un nuovo ed efficiente metodo per comunicare una dimostrazione}''\cite[p. 291]{micali}, che riducesse a zero le informazioni superflue comunicate al di fuori dell'evidenza della dimostrazione.
 
 
@@ -464,7 +464,7 @@ Fino a questo momento abbiamo fornito una trattazione teorica del concetto di ze
 
 \subsubsection{Protocollo di identificazione di Fiat-Shamir}
 Per prima cosa occorre definire il concetto di \emph{protocollo di identificazione}. Un protocollo di identificazione permette al verificatore di identificare il prover. 
-Trattandosi di un sistema a dimostrazione interattiva, zero-knowledge, occorre che il protocollo consenta al prover di dimostrare la propria identità con probabilità schiacciante qualora egli sia chi dice di essere(\emph{completezza}), senza rivelare alcuna informazione aggiuntiva (\emph{zero-knowledge}) e senza che il verificatore possa essere ingannato da un impostore che non conosce l'identità del prover (\emph{correttezza}).
+Trattandosi di un sistema a dimostrazione interattiva, zero-knowledge, occorre che il protocollo consenta al prover di dimostrare la propria identità con probabilità schiacciante qualora egli sia chi dice di essere (\emph{completezza}), senza rivelare alcuna informazione aggiuntiva (\emph{zero-knowledge}) e senza che il verificatore possa essere ingannato da un impostore che non conosce l'identità del prover (\emph{correttezza}).
 
 Il \emph{protocollo di identificazione di Fiat-Shamir} è un protocollo di identificazione che utilizza una funzione di hash crittografica sicura. Questo algoritmo è basato sulla difficoltà di estrarre la radice quadrata in modulo di un numero $n$ quando la sua \emph{fattorizzazione}\footnote{Banalmente la fattorizzazione di un numero consiste nel trovare i fattori primi che lo compongono.} è sconosciuta.
 
@@ -477,11 +477,11 @@ L'autorità affidabile sceglie un \emph{modulo} $n$ (questo definirà un insieme
 \end{equation*}
 Solamente l'atorità conosce questa fattorizzazione.
 Nel momento in cui un client vuole verificare la propria identità, come prima cosa l'autorità deve generare un \emph{certificato} che contiene le informazioni dell'utente. Questo certificato viene inviato al client che lo utilizzerà per dimostrare la propria identità. Questo certificato viene costruito come segue
-\begin{itemize}
+\begin{enumerate}
     \item Si calcolano i valori $v_j = f(I, j)$ per $j = 1, \dots, k$, dove $I$ è una stringa contenente i dati dell'utente.
-    \item Si prendono $k$ valori distinti di $j$ per cui $v_j$ è un residuo quadratico modulo $n$ (cioè esiste un valore che se elevato al quadrato risulta congruo a $v_j \bmod n$). A questo punto si calcola $s_j$ come la più piccola radice in modulo dell'inverso di $v_j$ (si veda il capitolo sull'algebra modulare).
+    \item Si prendono $k$ valori distinti di $j$ per cui $v_j$ è un residuo quadratico modulo $n$ (cioè esiste un valore che se elevato al quadrato risulta congruo a $v_j \bmod n$). A questo punto si calcola $s_j$ come la più piccola radice in modulo dell'inverso di $v_j$ (si veda il capitolo sull'algebra modulare). In altre parole, $s_j$ è il valore tale che $s_j^2 \equiv v_j^{-1} \bmod n$, dove $v_j^{-1}$ rappresenta l'inverso moltiplicativo di $v_j$ modulo $n$.
     \item Si crea un certificato che contenga $I$ e i $k$ valori $s_j$ insieme ai rispettivi indici.
-\end{itemize}
+\end{enumerate}
 
 
 \begin{mdframed}
@@ -517,7 +517,8 @@ Ovviamente il verifier $V$ accetterà solamente in qualora la prova di $A$ solam
 Occorre a questo punto dimostrare che questo protocollo soddisfa le proprietà che caratterizzano i sistemi a dimostrazione interattiva zero-knowledge.
 
 \begin{proof}
-    \emph{Completezza}.
+    \emph{(Completezza)}.
+    Vogliamo verificare che, seguendo il protocollo, la relazione $y_i^2 \prod_{e_{ij} = 1} v_j \mod n = x_i$ sia valida. Se questo fosse vero, vorrebbe dire che se $P$ scegliesse dei valori validi per $y_i$, $V$ sarebbe sempre in grado di verificare la sua identità. Questo perché al punto (3) $P$ invia a $V$ un $x_i = r_i^2 \bmod n$ che verrà controllato al punto (6) da $V$.
     Sappiamo che 
     \begin{equation*}
         x_i = y_i^2 \prod_{e_{ij} = 1} v_j \mod n
@@ -527,11 +528,43 @@ Occorre a questo punto dimostrare che questo protocollo soddisfa le proprietà c
         x_i &= \left( r_i^2 \prod_{e_{ij} = 1} s_j^2 \bmod n \right) \left( \prod_{e_{ij} = 1} v_j \bmod n \right) \\
         &= r_i^2 \prod_{e_{ij} = 1} ( s_j^2 v_j ) \bmod n 
     \end{align*}
-    Per ipotesi avevamo scelto 
+    Per ipotesi avevamo scelto $s_j$ in modo che fosse la radice più piccola dell'inverso in modulo di $v_j$, pertanto risulta $s_j^2 \equiv v_j^{-1} \bmod n$ da cui, sostituendo nell'equazione precedente, otteniamo
+    \begin{align*}
+        x_i &= r_i^2 \prod_{e_{ij}=1} v_j^{-1}v_j \bmod n \\
+        &= r_i^2 \prod_{e_{ij}=1} 1 \bmod n \\
+        &= r_i^2 \bmod n
+    \end{align*}
 \end{proof}
 
+\begin{proof}
+    \emph{(Correttezza)}.
+    La dimostrazione utilizza un'argomentazione di riduzione all'assurdo per mostrare che se $P$ fosse un impostore e potesse barare, ottenendo un alto tasso di accettazione da parte di $V$, allora sarebbe in grado di calcolare in tempo polinomiale una quantità che si presume non sia possibile calcolare.
 
-\subsection{Punti deboli (forse)}
+    Si assume che $P$ non conosca $s_j$ e non possa computare in tempo polinomiale\footnote{Ricordiamo che i prover hanno capacità computazionale polinomiale.}, alcuna radice quadrata di un prodotto $\prod_{j=1}^k v_j^{c_j} \bmod n$ (dove $c_j = -1, 0, 1$). Se cosi fosse, allora $V$ accetterebbe la prova con probabilità non superiore a $\frac{1}{2^{kt}}$.
+
+    L'unico modo in cui $P$ potrebbe tentare di ingannare $V$ è quello di indovinare i vettori binari $e_{ij}$. Scegiendo $y_i = r_i$, la \ref{eq:fiat_shamir_verifica} diventa
+    \begin{equation*}
+        x_i = r_i^2 \prod_{e_{ij} = 1} v_j \bmod n
+    \end{equation*}
+    Supponendo di trovarci all'iterazione $i-$esima del protocollo, la probabilità congiunta di indovinare tutti i $k$ bit della stringa $e_{ij}$ è data dal prodotto delle probabilità di indovinare ogni singolo bit, dunque abbiamo
+    \begin{equation*}
+        Pr(\text{stringa } i \text{ corretta}) = \underbrace{\frac{1}{2} \times \cdots \times \frac{1}{2}}_{k} = \frac{1}{2^k}
+    \end{equation*} 
+    Poiché il prover impostore deve azzeccare $t$ stringhe, avremo $t$ eventi indipendenti, ciascuno con probabilità $\frac{1}{2^k}$ di verificarsi. Per questo motivo la probabilità totale sarà data dal prodotto delle singole probabilità
+    \begin{equation*}
+        Pr(t \text{ stringhe corrette}) = \underbrace{\frac{1}{2^k} \times \cdots \times \frac{1}{2^k}}_{t} = \frac{1}{2^{kt}}
+    \end{equation*} 
+    Si suppone ora, per assurdo, che $P$ possa aumentare questa probabilità, scegliendo i valori $x_i$ in modo da poter calcolare, per una quantità non trascurabile di $x_i$, due valori $y_i'$ e $y_i''$ ottenuti tramite un passaggio algebrico dalla \ref{eq:fiat_shamir_verifica}, come
+    \begin{equation*}
+        \sqrt{\frac{x_i}{\prod_{e_{ij} = 1} v_j}} \bmod n
+    \end{equation*}
+    a partire da due stringhe $e_{ij}'$ e $e_{ij}''$. Il rapporto $\frac{y_i'}{y_i''}$ è della forma $\prod_{j=1}^k s_j^{c_j} \bmod n$ che contraddice l'assunzione di partenza. 
+\end{proof}
+
+\begin{proof}
+    \emph{(Zero-Knowledge)}.
+    La dimostrazione rigorosa richiede lo sviluppo di un algoritmo probabilistico che simuli la comunicazione fra $P$ e $V$. L'idea è che se $P$ non conosce $s_j$, l'algoritmo fornisce dei risultati in una distribuzione di probabilità indistinguibile (si veda la sezione \ref{zk} al paragrafo ``Indistinguibilità di variabili casuali'' per una trattazione formale del concetto di indistinguibilità) dalla reale distribuzione di questo protocollo. 
+\end{proof}
 
 \section{Sguardo al futuro}
 \begin{table}[H]
