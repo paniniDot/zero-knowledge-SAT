@@ -458,6 +458,16 @@ Siamo finalmente pronti per dare una definizione di sistema a dimostrazione inte
 
 
 \subsubsection{Dimostrazioni non interattive}
+Fino a questo momento abbiamo trattato sistemi a dimostrazione \emph{interattiva} a conoscenza zero.
+Come spiegato da Micali e i suoi colleghi nell'articolo \cite{noninteractive}, questi sistemi si differenziano da quelli più standard per i seguenti motivi 
+\begin{enumerate}
+    \item \emph{Interazione}. Il prover e il verifier interagiscono.
+    \item \emph{Casualità nascosta}. Il verifier possiede un nastro di bit random che può leggere prima di scrivere sul suo nastro di scrittura. La casualità introdotta da questa lettura è nascosta al prover.
+    \item \emph{Difficoltà computazionale}. La complessità computazionale di alcuni problemi è incorporata dal prover dentro le sue dimostrazioni. Sappiamo infatti che il prover ha capacità computazionali non polinomiali.
+\end{enumerate}
+
+
+
 
 \subsection{Protocolli reali}
 Fino a questo momento abbiamo fornito una trattazione teorica del concetto di zero-knowledge. In questa sezione vedremo come questi concetti possono essere applicati a protocolli reali.
@@ -499,7 +509,7 @@ Si ripetono i passaggi da 3 a 6 per $i = 1, \dots, t$:
 \begin{enumerate}
     \setcounter{enumi}{2}
     \item $P$ prende un $r_i \in [0, n)$ casuale e invia $x_i = r_i^2 \bmod n$ a $V$.
-    \item $V$ invia un vettore binario casuale $(e_{i1}, \dots, e_{ik})$ a $P$.
+    \item $V$ invia un vettore binario \emph{casuale} (la chiave dei protocolli interattivi zero knowledge è la randomness) $(e_{i1}, \dots, e_{ik})$ a $P$.
     \item $P$ invia a $V$ 
     \begin{equation}\label{eq:fiat_shamir_yi}
         y_i = r_i \prod_{e_{ij}=1} s_j \bmod n
