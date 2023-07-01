@@ -162,7 +162,27 @@ Detto questo, vengono di seguito riportate una serie di classi con le rispettive
 \end{itemize}
 
 \subsubsection{Algebra modulare}
-Denotiamo con
+Dato un numero intero positivo $n$ definiamo con 
+\begin{equation*}
+    \mathbb{Z}_n = \{0,1,\dots ,n-1\}
+\end{equation*}
+l'insieme dei numeri interi non negativi minori di $n$. 
+Ad esempio per $n = 6$ avremo $\mathbb{Z}_6 = \{0,1,2,3,4,5\}$.
+Definiamo ora $\mathbb{Z}_n^*$ come l'insieme degli elementi di $\mathbb{Z}_n$ \emph{relativamente primi} con $n$ (0 escluso, 1 incluso). Si dice che
+\begin{equation*}
+    a \text{ è relativamente primo con } b \Leftrightarrow MCD(a, b) = 1
+\end{equation*}
+cioè non hanno divisori comuni eccetto l'1.
+Continuando l'esempio con $n = 6$, $\mathbb{Z}_n^*$ sarebbe composto da tutti quei numeri primi con 6, cioè quei numeri il cui massimo comune divisore con 6 è 1 (ovvero non hanno divisori comuni). Pertanto
+$\mathbb{Z}_6^* = \{1,5\}$.
+Se invece prendiamo un numero primo come 7, avremo $\mathbb{Z}_7^* = \{1,2,3,4,5,6\}$ poiché chiaramente, essendo primo, il massimo comune divisore fra quel numero e uno più piccolo sarà sicuramente 1 non avendo dei fattori moltiplicativi che lo originano. 
+Pertanto $\mathbb{Z}_n^*$ di un numero primo $p$, che ragionevolmente indicheremo con $\mathbb{Z}_p^*$ sarà dato da
+\begin{equation*}
+    \mathbb{Z}_p^* = \{1, \dots, p-1\}
+\end{equation*}
+
+Dopo aver fatto questa premessa introduciamo il concetto di \emph{modulo}. Sia
+
 \begin{equation*}
     a \bmod n
 \end{equation*}
