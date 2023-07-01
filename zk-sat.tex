@@ -465,7 +465,8 @@ Come spiegato da Micali e i suoi colleghi nell'articolo \cite{noninteractive}, q
     \item \emph{Casualità nascosta}. Il verifier possiede un nastro di bit random che può leggere prima di scrivere sul suo nastro di scrittura. La casualità introdotta da questa lettura è nascosta al prover.
     \item \emph{Difficoltà computazionale}. La complessità computazionale di alcuni problemi è incorporata dal prover dentro le sue dimostrazioni. Sappiamo infatti che il prover ha capacità computazionali non polinomiali.
 \end{enumerate}
-
+Un passo successivo è stato fatto nello sviluppo di questo tipo di dimostrazioni quando si è capito che non tutti questi aspetti risultano essenziali affinché si possa parlare di dimostrazioni a conoscenza zero.
+In particolare è possibile dimostrare che se $P$ e $V$ condividono una stessa stringa casuale, il prover è in grado di dimostrare in zero-knowledge la correttezza di un'affermazione senza che questo richieda interazione fra le parti.
 
 
 
@@ -493,6 +494,8 @@ Nel momento in cui un client vuole verificare la propria identità, come prima c
     \item Si crea un certificato che contenga $I$ e i $k$ valori $s_j$ insieme ai rispettivi indici.
 \end{enumerate}
 
+Quanto descritto fin'ora costituisce una serie di operazioni preliminari necessarie per garantire un'identificazione corretta del client.
+Il protocollo effettivo di identificazione è riassunto di seguito.
 
 \begin{mdframed}
 \begin{center}
@@ -519,10 +522,11 @@ Si ripetono i passaggi da 3 a 6 per $i = 1, \dots, t$:
     \begin{equation}\label{eq:fiat_shamir_verifica}
         x_i = y_i^2 \prod_{e_{ij} = 1} v_j \mod n
     \end{equation}
+    corrisponde all'$x_i$ fornitogli al punto (3).
 \end{enumerate}
 \end{mdframed}
 
-Ovviamente il verifier $V$ accetterà solamente in qualora la prova di $A$ solamente se tutti e $t$ i controlli (le iterazioni dei punti 3 fino a 6 del protocollo) hanno successo.
+Il verifier $V$ accetterà la prova di $P$ solamente se tutti e $t$ i controlli (le iterazioni dei punti (3) fino a (6) del protocollo) hanno successo, ovvero le $x_i$ combaciano per $i = 1, \dots, t$.
 
 Occorre a questo punto dimostrare che questo protocollo soddisfa le proprietà che caratterizzano i sistemi a dimostrazione interattiva zero-knowledge.
 
