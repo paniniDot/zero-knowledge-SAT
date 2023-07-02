@@ -527,15 +527,25 @@ ovvero un linguaggio la cui dimensione delle istanze è $\leq k$.
 \begin{definizione}[Bounded NIZK proof system] 
     Siano $(P, V)$ una coppia sender-receiver. Diremo che $(P, V)$ dove $P(\cdot,\cdot)$ è un algoritmo \emph{random selector}\footnote{Spiegalo} a due input e $V(\cdot, \cdot, \cdot)$ un algoritmo polinomiale. Diremo che $(P, V)$ è un \emph{bounded NIZK proof system} per un linguaggio $L_n$ se esiste una costante positiva $c$ tale che
     \begin{enumerate}
-        \item \emph{Completezza}. Per ogni $x \in L_n$ e per ogni $n$ adeguatamente grande (cos'è $n$?) vale
+        \item \emph{Completezza}. Per ogni $x \in L_n$ (per $n$ adeguatamente grandi) vale
         \begin{equation*}
             Pr\left(\sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof \overset{R}{\leftarrow} P(\sigma, x) : V(\sigma, x, Proof) = 1\right) > \frac{2}{3}
         \end{equation*}
-        \item \emph{Soundness}. Per ogni $x \notin L_n$, dato un prover impostore $\hat{P}$ e per ogni $n$ adeguatamente grande vale
+        In altre parole, la probabilità che dopo aver generato una stringa casuale in $\left\{ 0, 1\right\}^{n^c}$ e averla fornita come input a $P$ insieme ad $x$ per creare una prova altrettanto casuale, $V$ accetti questa prova avendo in input $\sigma, x$ e la prova stessa è superiore a $\frac{2}{3}$.
+        \item \emph{Soundness}. Per ogni $x \notin L_n$, dato un prover impostore $\hat{P}$ 
+        (per ogni $n$ adeguatamente grande) vale
         \begin{equation*}
             Pr(\sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof \overset{R}{\leftarrow} \hat{P}(\sigma, x) : V(\sigma, x, Proof) = 1) < \frac{1}{3}
         \end{equation*}
-        \item \emph{Zero-knowledge}. Per ogni $x \in L_n$, dato un prover onesto $P$ e per ogni $n$ adeguatamente grande vale
+        Significa che la probabilità che, dopo aver generato un stringa random, un prover impostore $\hat{P}$ riesca a creare casualmente una prova che venga accettata da $V$ è inferiore a $\frac{1}{3}$.
+        \item \emph{Zero-knowledge}. Per ogni $x \in L_n$, dato un prover onesto $P$ (per ogni $n$ adeguatamente grande) vale
+        \begin{equation*}
+            \left| \Pr\left(s \overset{R}{\leftarrow}View(n,x) : D_n(s) = 1\right) - \Pr \left(s \overset{R}{\leftarrow}\mathrm{S}(1^n, x) : D_n(s) = 1 \right) \right| < \frac{1}{n^d}
+        \end{equation*} 
+        dove 
+        \begin{equation*}
+            View(n,x) = \left\{ \sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof \overset{R}{\leftarrow}P(\sigma, x) : (x, \sigma, Proof)  \right\}
+        \end{equation*}       
     \end{enumerate}
 \end{definizione}
 
