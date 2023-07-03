@@ -539,19 +539,21 @@ ovvero un linguaggio la cui dimensione delle istanze è $\leq k$.
         \end{equation*}
         Significa che la probabilità che, dopo aver generato un stringa random, un prover impostore $\hat{P}$ riesca a creare casualmente una prova che venga accettata da $V$ è inferiore a $\frac{1}{3}$.
         \item \emph{Zero-knowledge}. Esiste un algoritmo efficiente $S$ tale che 
-        per ogni $x \in L_n$ (per ogni $n$ adeguatamente grande) e per ogni algoritmo $D$, per $d > 0$ vale 
+        per ogni $x \in L_n$ (per ogni $n$ adeguatamente grande) e per ogni algoritmo $V_n$ (la cui notazione indica che la dimensione delle prove dev'essere $n$), per $d > 0$ vale 
         \begin{equation*}
-            \left| \Pr\left(s \overset{R}{\leftarrow}View(n,x) : D_n(s) = 1\right) - \Pr \left(s \overset{R}{\leftarrow}\mathrm{S}(1^n, x) : D_n(s) = 1 \right) \right| < \frac{1}{n^d}
+            \left| \Pr\left(s \overset{R}{\leftarrow}View(n,x) : V_n(s) = 1\right) - \Pr \left(s \overset{R}{\leftarrow}\mathrm{S}(1^n, x) : V_n(s) = 1 \right) \right| < \frac{1}{n^d}
         \end{equation*} 
         dove 
         \begin{equation*}
             View(n,x) = \left\{ \sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof \overset{R}{\leftarrow}P(\sigma, x) : (x, \sigma, Proof)  \right\}
         \end{equation*}  
-        corrisponde allo spazio di probabilità su $(x, \sigma, Proof)$, generato dall'esecuzione ordinata degli algoritmi che generano casualmente una stringa binaria $\sigma$ di dimensione $n^c$ e una prova $Proof$ a partire da $x$ e $\sigma$. Questo significa che la differenza in modulo fra la probabilità che u
+        corrisponde allo spazio di probabilità su $(x, \sigma, Proof)$, generato dall'esecuzione ordinata degli algoritmi che generano casualmente una stringa binaria $\sigma$ di dimensione $n^c$ e una prova $Proof$ a partire da $x$ e $\sigma$. 
+        In altre parole occorre che la differenza in modulo fra la probabilità che una stringa $s$ sia generata casualmente dallo spazio $\left\{ x, \sigma, Proof \right\}$, sia accettata da $V_n$ e la probabilità che $s$ sia generata casualmente da $S$ e sia accettata da $V_n$ sia inferiore a $\frac{1}{n^d}$.
+        In questo contesto $S$ viene definito \emph{simulatore}. Un simulatore è un algoritmo che emula il comportamento di un prover reale, senza però avere accesso alla sua conoscenza segreta. Questo ci consente di concludere che se la differenza tra la probabilità che un impostore (il simulatore) riesca a convincere il verifier con una prova falsa e la probabilità che un prover reale riesca a convincerlo con una prova autentica è trascurabile ($< \frac{1}{n^d}$), allora il protocollo è zero-knowledge. Questo perché il verifier non è in grado di distinguere tra una prova di conoscenza autentica e una simulata, poiché questa non rivela alcuna informazione aggiuntiva sulla conoscenza da dimostrare.
     \end{enumerate}
 \end{definizione}
 
-La definizione di Non-Interactive ZKP più generale viene data per uno specifico tipo di teoremi (Per ``teorema'' si intende una particolare stringa appartenente ad un dato linguaggio. Tutti i falsi teoremi saranno dunque stringhe non appartenenti a tale linguaggio), che sono istanze di 3-SAT, già spiegato in precedenza.
+La definizione di Non-Interactive ZKP più generale viene data per uno specifico tipo di teoremi (con ``teorema'' si intende una particolare stringa appartenente ad un dato linguaggio. Tutti i falsi teoremi saranno dunque stringhe non appartenenti a tale linguaggio), che sono istanze di 3-SAT, già spiegato in precedenza.
 Per la dimostrazione completa si veda \cite[pp.1105-1106]{noninteractive}.
 
 
