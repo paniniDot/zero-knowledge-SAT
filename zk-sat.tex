@@ -477,7 +477,7 @@ Siamo finalmente pronti per dare una definizione di sistema a dimostrazione inte
 
 
 
-\subsubsection{Dimostrazioni non interattive}
+\subsection{Dimostrazioni non interattive}
 Fino a questo momento abbiamo trattato sistemi a dimostrazione \emph{interattiva} a conoscenza zero.
 Come spiegato da Micali e i suoi colleghi nell'articolo \cite{noninteractive}, questi sistemi si differenziano da quelli più standard per i seguenti motivi 
 \begin{enumerate}
@@ -668,6 +668,14 @@ Occorre a questo punto dimostrare che questo protocollo soddisfa le proprietà c
 \end{proof}
 
 \section{Sguardo al futuro}
+L'introduzione delle \emph{dimostrazioni non interattive a conoscenza zero} (NIZK) ha rappresentato un significativo passo avanti in termini di \emph{efficienza}. A differenza dei protocolli interattivi, che richiedono più round di interazione tra prover e verifier, con le dimostrazioni NIZK è sufficiente condividere una stringa di bit random. Grazie a questa stringa, qualsiasi prover è in grado di generare una prova verificabile da parte di uno o più verifier contemporaneamente.
+
+Dal punto di vista computazionale, dunque, i protocolli NIZK sono notevolmente più \emph{efficienti e scalabili} rispetto ai protocolli ZK interattivi. La necessità di un'interazione ridotta o addirittura nulla tra le parti coinvolte semplifica notevolmente l'esecuzione dei protocolli e riduce il carico computazionale complessivo.
+
+Il progresso e l'evoluzione delle dimostrazioni a conoscenza zero non interattive hanno aperto la strada allo sviluppo di nuove e potenti costruzioni crittografiche, tra cui gli \emph{zk-SNARKs}, i \emph{Bulletproofs}, gli \emph{STARKs} e altre varianti. Queste costruzioni rappresentano un ulteriore avanzamento nel campo delle dimostrazioni a conoscenza zero e offrono vantaggi specifici in termini di efficienza, scalabilità e sicurezza.
+
+Di queste vedremo nel dettaglio solamente \emph{zk-SNARKs} essendo ad oggi le più utilizzate. Tuttavia di seguito è riportata una tabella comparativa che mostra le principali differenze tra le costruzioni citate.
+
 \begin{table}[H]
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -675,10 +683,26 @@ Occorre a questo punto dimostrare che questo protocollo soddisfa le proprietà c
          & Bulletproofs                                               & zk-STARKs                                                          & zk-SNARKs                                                  \\ \hline
 Prover   & \begin{tabular}[c]{@{}c@{}}30s\\ (Slowest)\end{tabular}    & \begin{tabular}[c]{@{}c@{}}1.6s\\ (Fastest)\end{tabular}           & \begin{tabular}[c]{@{}c@{}}2.3s\\ (Very fast)\end{tabular} \\ \hline
 Verifier & \begin{tabular}[c]{@{}c@{}}1100ms\\ (Slowest)\end{tabular} & \begin{tabular}[c]{@{}c@{}}16ms\\ (Very fast)\end{tabular}         & \begin{tabular}[c]{@{}c@{}}10ms\\ (Fastest)\end{tabular}   \\ \hline
-Size     & \begin{tabular}[c]{@{}c@{}}1.3KB\\ (Middle)\end{tabular}   & \begin{tabular}[c]{@{}c@{}}\textgreater{}40KB\\ (Big)\end{tabular} & \begin{tabular}[c]{@{}c@{}}288B\\ (Smallest)\end{tabular}  \\ \hline
+Proof Size     & \begin{tabular}[c]{@{}c@{}}1.3KB\\ (Middle)\end{tabular}   & \begin{tabular}[c]{@{}c@{}}\textgreater{}40KB\\ (Big)\end{tabular} & \begin{tabular}[c]{@{}c@{}}288B\\ (Smallest)\end{tabular}  \\ \hline
 \end{tabular}
+\caption{Tabella comparativa \emph{zk-SNARKs}, \emph{Bulletproofs} e \emph{zk-STARKs}.}
+\label{tab:snarkbulletproofstark}
 \end{table}
+
 \subsection{Protocolli ZK-SNARK}
+Nella classe delle dimostrazioni non interattive, di particolare rilevanza sono i protocolli \emph{zk-SNARKs} (Zero-Knowledge Succinct Non-Interactive Argument of Knowledge). Apparsi per la prima volta nel 2012 nell'articolo ``From Extractable Collision Resistance to Succinct Non-Interactive Arguments of Knowledge,and Back Again'' \cite{zksnarks}, hanno avuto un'ampia diffusione grazie al loro utilizzo in applicazioni reali fra cui la criptovaluta \emph{Zcash}.
+
+\subsubsection{Descrizione}
+Il nome \emph{zk-SNARK} è un acronimo che denota le caratteristiche principali di questo tipo di dimostrazioni a conoscenza zero:
+\begin{itemize}
+    \item \emph{Zero-knowledge}: Il verifier non impara nulla dalla prova, se non il fatto che la prova è valida.
+    \item \emph{Succint}: La dimensione della prova è piccola se rapportata alla dimensione del problema o della witness.
+    \item \emph{Non-interactive}: La prova è generata da un prover e può essere verificata da un verifier senza interazione, in altre parole non richiede interazione.
+    \item \emph{Argument}: Anche definibile come ``computational soundness'', significa che è sicuro solamente per prover con risorse computazionali limitate. In altre parole, un prover con risorse illimitate potrebbe riuscire a generare una falsa prova e ingannare il verifier.
+    \item \emph{Knowledge-sound}: Questa proprietà garantisce che il prover conosca effettivamente la witness. In altre parole, il prover non può generare una prova senza avere effettivamente conoscenza. Formalmente, per ogni prover onesto (in grado di produrre una prova valida), esiste un knowledge extractor capace di estrarre la witness (conoscenza) ad egli appartenuta.
+\end{itemize}
+
+
 \subsubsection{PINOCCHIO: correttezza di un calcolo su un grafo computazionale (forse)}
 \subsubsection{SONIC: soddisfacibilità di un circuito booleano (SAT)}
 \paragraph{Problema SAT}
