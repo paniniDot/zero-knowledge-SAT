@@ -477,7 +477,7 @@ Siamo finalmente pronti per dare una definizione di sistema a dimostrazione inte
 
 
 
-\subsection{Dimostrazioni non interattive}
+\subsection{Dimostrazioni non interattive}\label{nizk}
 Fino a questo momento abbiamo trattato sistemi a dimostrazione \emph{interattiva} a conoscenza zero.
 Come spiegato da Micali e i suoi colleghi nell'articolo \cite{noninteractive}, questi sistemi si differenziano da quelli più standard per i seguenti motivi 
 \begin{enumerate}
@@ -518,20 +518,21 @@ Se $p(\cdot, \cdot, \cdots)$ è un predicato, allora indicheremo con
     Pr(x \overset{R}{\leftarrow} S; y \overset{R}{\leftarrow} T; \cdots : p(x, y, \cdots))
 \end{equation*}
 la probabilità che il predicato $p$ sia soddisfatto a seguito dell'esecuzione ordinata di tutti gli algoritmi separati da un punto e virgola.
+
 Sia inoltre $L$ un linguaggio e $k>0$, allora definiremo 
 \begin{equation*}
     L_k = \left\{ x \in L : |x| \leq k \right\}
 \end{equation*}
 ovvero un linguaggio la cui dimensione delle istanze è $\leq k$.
 
-\begin{definizione}[Bounded NIZK proof system] 
+\begin{definizione}[Bounded NIZK proof system]\label{def:bounded_nizk}
     Siano $(P, V)$ una coppia sender-receiver. Diremo che $(P, V)$ dove $P(\cdot,\cdot)$ è un algoritmo \emph{random selecting}\footnote{È una macchina di Turing con accesso ad un \emph{random selector}, che è a sua volta un agloritmo a cui viene fornita in input una coppia $(s, S)$, dove $S$ è un insieme finito di elementi. Questo algoritmo ritorna un valore casuale all'interno di $S$. Il primo input $s$ ci consente di fare due scelte indipendenti a parità di insieme. Infatti se $S$ è lo stesso ma $s_1 \neq s_2$, i due elementi ritornati sono scelti casualmente e indipendentemente l'uno dall'altro.} a due input (questo strumento è estremamente importante perché contribuisce alla casualità e all'indipendenza delle prove generate, assicurando che il prover non possa manipolarle) e $V(\cdot, \cdot, \cdot)$ un algoritmo polinomiale. Diremo che $(P, V)$ è un \emph{bounded NIZK proof system} per un linguaggio $L_n$ se esiste una costante positiva $c$ tale che
     \begin{enumerate}
         \item \emph{Completezza}. Per ogni $x \in L_n$ (per $n$ adeguatamente grandi) vale
         \begin{equation*}
             Pr\left(\sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof \overset{R}{\leftarrow} P(\sigma, x) : V(\sigma, x, Proof) = 1\right) > \frac{2}{3}
         \end{equation*}
-        In altre parole, la probabilità che dopo aver generato una stringa casuale in $\left\{ 0, 1\right\}^{n^c}$ e averla fornita come input a $P$ insieme ad $x$ per creare una prova altrettanto casuale, $V$ accetti questa prova avendo in input $\sigma, x$ e la prova stessa è superiore a $\frac{2}{3}$.
+        In altre parole, la probabilità \emph{condizionata}\footnote{Calcolare la probabilità condizionata di un evento significa determinare la probabilità che quell'evento si verifichi, considerando che un altro evento, non indipendente dal primo, si è verificato in precedenza.} che dopo aver generato una stringa casuale in $\left\{ 0, 1\right\}^{n^c}$ e averla fornita come input a $P$ insieme ad $x$ per creare una prova altrettanto casuale, $V$ accetti questa prova avendo in input $\sigma, x$ e la prova stessa è superiore a $\frac{2}{3}$.
         \item \emph{Soundness}. Per ogni $x \notin L_n$, dato un prover impostore $\hat{P}$ 
         (per ogni $n$ adeguatamente grande) vale
         \begin{equation*}
@@ -552,6 +553,8 @@ ovvero un linguaggio la cui dimensione delle istanze è $\leq k$.
         In questo contesto $S$ viene definito \emph{simulatore}. Un simulatore è un algoritmo che emula il comportamento di un prover reale, senza però avere accesso alla sua conoscenza segreta. Questo ci consente di concludere che se la differenza tra la probabilità che un impostore (il simulatore) riesca a convincere il verifier con una prova falsa e la probabilità che un prover reale riesca a convincerlo con una prova autentica è trascurabile ($< \frac{1}{n^d}$), allora il protocollo è zero-knowledge. Questo perché il verifier non è in grado di distinguere tra una prova di conoscenza autentica e una simulata, poiché questa non rivela alcuna informazione aggiuntiva sulla conoscenza da dimostrare.
     \end{enumerate}
 \end{definizione}
+
+La fase iniziale di generazione casuale della stringa condivisa $\sigma$ è comunemente chiamata \emph{setup} e viene spesso affidata a un algoritmo chiamato $G$ (Generator). Nei protocolli bounded NIKZ, il setup è richiesto ad ogni nuova dimostrazione, mentre nel caso generale è richiesto una sola volta per ogni coppia di prover e verifier. Ciò significa che la stessa $\sigma$ può essere riutilizzata in più dimostrazioni senza compromettere la proprietà di conoscenza zero.  
 
 La definizione di Non-Interactive ZKP più generale viene data per uno specifico tipo di teoremi (con ``teorema'' si intende una particolare stringa appartenente ad un dato linguaggio. Tutti i falsi teoremi saranno dunque stringhe non appartenenti a tale linguaggio), che sono istanze di 3-SAT, già spiegato in precedenza.
 Per la dimostrazione completa si veda \cite[pp.1105-1106]{noninteractive}.
@@ -702,8 +705,58 @@ Il nome \emph{zk-SNARK} è un acronimo che denota le caratteristiche principali 
     \item \emph{Knowledge-sound}: Questa proprietà garantisce che il prover conosca effettivamente la witness. In altre parole, il prover non può generare una prova senza avere effettivamente conoscenza. Formalmente, per ogni prover onesto (in grado di produrre una prova valida), esiste un knowledge extractor capace di estrarre la witness (conoscenza) ad egli appartenuta.
 \end{itemize}
 
+\paragraph{Succint Arguments}
+Occorre spendere due parole per definire più formalmente, cosa significa che le prove debbano essere \emph{succinte}. Considerando sistemi a dimostrazione in \texttt{$\mathcal{NP}$}, la dimensione delle prove fornite è tipicamente la stessa della witness da dimostrare. Questo vincolo ha stimolato la comunità scientifica a studiare nuove tecniche per ridurre la dimensione delle prove. Si è così arrivati a definire sistemi ``computational sound'', o anche detti \emph{argument systems}, dove però la proprietà di correttezza (soundness) vale solo per prover polinomiali.
+In particolare l'idea che ha originato questo tipo di sistemi è la possibilità di avere funzioni hash crittografiche resistenti alle collisioni\footnote{Una funzione hash è una funzione non invertibile che mappa una stringa di lunghezza arbitraria in una stringa di lunghezza predefinita detta digest. Sono alla base, ad esempio, delle hash table che nella loro versione più semplice mappano i valori in ingresso in indici di un'array. La proprietà di \emph{resistenza alle collisioni} garantisce che, prese due stringhe non identiche qualsiasi, non potrà mai accadere che la funzione produca due digest identici}. Si dimostra che se queste esistono, allora è garantita l'esistenza di protocolli a dimostrazione in \texttt{$\mathcal{NP}$} nei quali il verifier verifica la prova in tempo 
+\begin{equation*}
+    p(\lambda, |M|, |x|, \log t)
+\end{equation*}
+dove $p$ è un polinomio in funzione di $\lambda$ (parametro di sicurezza), $x$ (l'istanza da dimostrare), $M$ (la macchina di Turing che verifica la dimostrazione) e $t$ (il tempo di esecuzione della macchina $M$ su input $x$).
+Questo significa che il tempo di verifica della prova non dipende in alcun modo dalla dimensione della witness. In altre parole, la dimensione della prova è piccola se rapportata alla dimensione del problema o della witness.
+Questo tipo di sistemi dove la complessità di verifica è sublineare (o addirittura indipendente) rispetto alla dimensione della witness, sono detti \emph{succinti}. 
 
-\subsubsection{PINOCCHIO: correttezza di un calcolo su un grafo computazionale (forse)}
+\paragraph{Componenti del protocollo}
+Esattamente come ogni altro protocollo a dimostrazione non interattiva, anche i protocolli \emph{zk-SNARK} richiedono una fase iniziale di \emph{setup}. Per questa ragione sono composti da tre componenti principali
+\begin{enumerate}
+    \item $Gen (G)$. Algoritmo di setup probabilistico che genera una stringa $\sigma$ nota anche come \emph{common reference string} (CRS). Questa stringa è pubblica e servirà per generare prove e verificare dimostrazioni. La notazione rimane analoga a quella usata per presentare i protocolli a dimostrazione non interattiva (vedi definizione \ref{def:bounded_nizk}), ossia
+    \begin{equation*}
+        \sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}
+    \end{equation*}
+    \item $Prover (P)$. Algoritmo probabilistico che, come ogni altro protocollo NIKZ, prende in input la CRS, la witness $w$ e l'istanza $x$ da dimostare e ne genera una prova $Proof$. Anche in questo caso la notazione è del tutto analoga a \ref{def:bounded_nizk}, cioè
+    \begin{equation*}
+        Proof \overset{R}{\leftarrow} P(\sigma, w, x)
+    \end{equation*}
+    \item $Verifier (V)$. Algoritmo che prende in input la CRS, l'istanza $x$ e la prova $Proof$ e restituisce un bit $b$ che indica se la prova è valida (1) o meno (0). Come per i due algoritmi precedenti la notazione è la seguente
+    \begin{equation*}
+        V(\sigma, x, Proof) = b, \quad b \in \left\{ 0, 1\right\}
+    \end{equation*}
+\end{enumerate}
+
+\begin{definizione}(zk-SNARK)
+    Un sistema a dimostrazione non interattiva (si veda il paragrafo \ref{nizk}) per un linguaggio $L$ si dice \emph{zk-SNARK} se soddisfa le seguenti proprietà
+    \begin{enumerate}
+        \item \emph{Completeness}. Per ogni $x \in L$ un prover onesto con una witness valida è in grado di convincere il verifier. 
+        Formalmente, mantenendo la notazione introdotta in precedenza, si ha che
+        \begin{equation*}
+            Pr\left(\sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof \overset{R}{\leftarrow} P(\sigma, w, x); V(\sigma, x, Proof) = 1\right) = 1
+        \end{equation*}
+        \item \emph{Knowledge Soundness}. Questo implica che esiste un \emph{knowledge extractor} in grado di calcolare la witness (conoscenza segreta), a partire da una prova valida. L'extractor, come già detto, ha accesso completo allo stato di $P$ (incluso il suo nastro random).
+        Formalmente, per ogni prover probabilistico a tempo polinomiale (PPT) $P$ esiste un extractor PPT $\varepsilon_P$ tale che
+        \begin{equation*}
+            Pr\left( \sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; ((x, Proof); w) \overset{R}{\leftarrow} P \| \varepsilon_P(\sigma) : V(\sigma, x, Proof) = 1 \wedge (x, w) \notin L \right) \leq negl
+        \end{equation*}
+        In altre parole la probabilità che il verifier accetti una prova per un'istanza non appartenente al linguaggio, sapendo che l'extractor è riuscito ad estrarre witness e $Proof$ generate da $P$ a partire da uno spazio di probabilità uniforme, a partire da un CRS casuale, è trascurabile (negl).
+        In altre parole, per ogni prover $P$ onesto (cioè che conosca una prova valida per dimostrare una data witness $w$), esiste un knowledge extractor in grado di estrarre $w$ a partire da $\sigma$. 
+        \item \emph{Succinctness}. Dato un parametro di sicurezza $\lambda \in \mathbb{N}$, una dimostrazione non interattiva per un linguaggio $L$, in cui il tempo di esecuzione del verifier è polinomiale rispetto a $\lambda + |x|$ e la dimensione della prova è polinomiale rispetto a $\lambda$, viene chiamata \emph{pre-processing SNARK}. Se aggiungiamo il vincolo che $\sigma$ sia di dimensione polinomiale rispetto a $\lambda$, allora il sistema viene chiamato \emph{fully succinct SNARK}.
+        \item \emph{Statistical Zero-Knowledge}. Questa proprietà è identica a quella descritta nel paragrafo \ref{nizk}. Ovvero le due distribuzioni di probabilità delle prove generate da un prover $P$ onesto e un simulatore $S$ sono del tutto indistinguibili per un verifier $V$ efficiente. In altre parole per ogni $\lambda \in \mathbb{N}$ e $x \in L$ si ha che le seguenti distribuzioni sono statisticamente indistinguibili
+        \begin{align*}
+            &D_P = \left\{  \sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof_P \overset{R}{\leftarrow} P(\sigma, x, w) \right\} \\
+            &D_S = \left\{  \sigma \overset{R}{\leftarrow} \left\{ 0, 1\right\}^{n^c}; Proof_S \overset{R}{\leftarrow} S(\sigma, x) \right\}
+        \end{align*}
+    \end{enumerate}
+\end{definizione}
+
+
 \subsubsection{SONIC: soddisfacibilità di un circuito booleano (SAT)}
 \paragraph{Problema SAT}
 \paragraph{SAT e dimostrazioni a conoscenza zero}
